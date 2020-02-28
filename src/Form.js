@@ -40,13 +40,19 @@ const UserForm = ({ values, errors, touched, status }) => {
                 name="password"
                 placeholder="Your password"
                 />
+            {touched.password && errors.password && (
+              <p className="errors">{errors.password}</p>
+            )}
           <label htmlFor="terms">Terms of Service</label>            
             <Field
               type="checkbox"
               name="terms"
               checked={values.terms}
             />
-            {/* <span className="checkmark" />                     */}
+            {touched.terms && errors.terms && (
+              <p className="errors">{errors.terms}</p>
+            )}
+            <span className="checkmark" />                    
           <button type="submit">Submit</button>
         </Form>
         <pre>{JSON.stringify(values, null, 2)}</pre>
@@ -74,9 +80,10 @@ const UserForm = ({ values, errors, touched, status }) => {
     },  
     
     validationSchema: Yup.object().shape({
-      name: Yup.string().required("name is required"),      
-      email: Yup.string().required("email is required"),
-      terms: Yup.string().required("You have to agree to the Terms of Service")
+      name: Yup.string().min(3, "Name too short").required("Name is required"),      
+      email: Yup.string().email('Invalid email address').required("Email is required"),
+      password: Yup.string().min(6, "Password must have at least 6 characters").required("password is required"),
+      terms: Yup.string().required('true', "You must agree to the Terms of Service")
     }),  
    
     handleSubmit(values, { setStatus, resetForm }) {
